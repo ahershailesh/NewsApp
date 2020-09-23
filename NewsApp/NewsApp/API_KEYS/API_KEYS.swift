@@ -8,6 +8,6 @@
 
 import UIKit
 
-enum API_KEY: String {
-    case NEWS_API = ""
+struct API_KEY {
+    static var NEWS_API: String = ""
 }

@@ -9,7 +9,7 @@
 import UIKit
 
 class NewsAPIHomeScreenManager: ScrollViewItemTrakeable {
-    private let endPoints = NewsAPIEndPoints()
+    private let interceptor = NewsAPIInterceptor()
         
     weak var contentReciever: ScrollViewContentUpdater?
     
