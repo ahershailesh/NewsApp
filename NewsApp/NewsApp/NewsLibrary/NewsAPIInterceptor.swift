@@ -1,5 +1,5 @@
 //
-//  NewsAPIEndPoints.swift
+//  NewsAPIInterceptor.swift
 //  NewsApp
 //
 //  Created by Shailesh Aher on 22/09/20.
