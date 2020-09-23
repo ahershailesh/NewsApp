@@ -88,3 +88,8 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+
+NewsApp/NewsApp.xcodeproj/xcshareddata/
+*/*/*/.DS_Store
+
+*/NewsApp/API_KEYS/API_KEYS.swift

@@ -8,21 +8,11 @@
 
 import Foundation
 
-enum RequestType {
-    case get, post(body: String), patch(body: String), delete
+protocol NetworkRequestConfigurator {
+    func request(with dataProvider: NetworkRequestDataProvider) -> URLRequest?
 }
 
-
-protocol RequestDataProvider {
-    var path: String { get }
-    var type: RequestType  { get }
-}
-
-protocol RequestProvider {
-    func request(with dataProvider: RequestDataProvider) -> URLRequest?
-}
-
-class RequestBuilder: RequestProvider {
+class NetworkRequestConstructor: NetworkRequestConfigurator {
     private let cachePolicy: URLRequest.CachePolicy
     private let timeout: TimeInterval
     private let serverURL: String
@@ -35,16 +25,15 @@ class RequestBuilder: RequestProvider {
         self.timeout = timeout
     }
     
-    func request(with dataProvider: RequestDataProvider) -> URLRequest? {
+    func request(with dataProvider: NetworkRequestDataProvider) -> URLRequest? {
         let finalURL = serverURL + dataProvider.path
+        
         guard let url = URL(string: finalURL) else { return nil }
+        
         var request = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
+        request.httpMethod = dataProvider.type.method
         switch dataProvider.type {
-        case .post(let body):
-            request.httpMethod = "POST"
-            request.httpBody = body.data(using: .utf8)
-        case .patch(let body):
-            request.httpMethod = "PATCH"
+        case .post(let body), .patch(let body):
             request.httpBody = body.data(using: .utf8)
         default: break
         }

@@ -34,33 +34,41 @@ struct Source: Codable {
 
 class NewsAPIEndPoints {
     
-    private let requestProvider: RequestProvider
-    private let executer: NetworkRequestExecuter
+    private let requestProvider: NetworkRequestConfigurator
+    private let executer: NetworkRequestExecutable
     
-    init(requestProvider: RequestProvider = RequestBuilder(serverURL: "https://newsapi.org/v2"),
-         executer: NetworkRequestExecuter = NetworkService()) {
+    init(requestProvider: NetworkRequestConfigurator = NetworkRequestConstructor(serverURL: "https://newsapi.org/v2"),
+         executer: NetworkRequestExecutable = NetworkRequestExecuter()) {
         self.requestProvider = requestProvider
         self.executer = executer
     }
     
-    func getHeadLines(query: String?, source: String?, category: Category = .general) {
-        let data = NewsAPIData(endPoint: .topHeadLines, query: query, country: nil, category: category, source: source)
-        guard let request = requestProvider.request(with: data) else {
+    func getHeadLines(configuration: NewsAPIHeadlinesConfiguration, success: @escaping (NewsAPIResponse) -> Void, failure: @escaping (Error?) -> Void) {
+        guard let request = requestProvider.request(with: NewAPIKeyIntegrater(endpoint: .topHeadLines(configuration: configuration))) else {
+            failure(nil)
             return
         }
         executer.execute(request: request) { (item: NewsAPIResponse?, error) in
-            
+            if let item = item {
+                success(item)
+            } else {
+                failure(error)
+            }
         }
     }
     
-    func getEverything(query: String?, source: String?) {
-        let defaultSource = source ?? (query == nil ? "google-news-in" : nil)
-        let data = NewsAPIData(endPoint: .everything, query: query, country: nil, category: nil, source: defaultSource)
-        guard let request = requestProvider.request(with: data) else {
+    func getEverything(configuration: NewsAPIEverythingConfiguration, success: @escaping (NewsAPIResponse) -> Void, failure: @escaping (Error?) -> Void ) {
+        
+        guard let request = requestProvider.request(with: NewAPIKeyIntegrater(endpoint: .everything(configuration: configuration))) else {
+            failure(nil)
             return
         }
         executer.execute(request: request) { (item: NewsAPIResponse?, error) in
-            
+            if let item = item {
+                success(item)
+            } else {
+                failure(error)
+            }
         }
     }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol NetworkRequestExecuter {
+protocol NetworkRequestExecutable {
     func execute<T: Decodable>(request: URLRequest, completionBlock: @escaping (T?, Error?) -> Void)
 }
 
@@ -24,7 +24,7 @@ protocol Decoder {
 
 extension JSONDecoder: Decoder {  }
 
-class NetworkService: NetworkRequestExecuter {
+class NetworkRequestExecuter: NetworkRequestExecutable {
     private let requestFetcher: RequestFetcher
     private let decoder: Decoder
     
@@ -47,6 +47,3 @@ class NetworkService: NetworkRequestExecuter {
         task.resume()
     }
 }
-
-
-//let url = URL(string: "https://newsapi.org/v2/top-headlines?country=us&apiKey=8815d577462a4195a64f6f50af3ada08")!
