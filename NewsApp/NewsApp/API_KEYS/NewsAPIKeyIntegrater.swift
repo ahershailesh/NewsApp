@@ -6,10 +6,9 @@
 //  Copyright © 2020 Shailesh Aher. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
-struct NewAPIKeyIntegrater: NetworkRequestDataProvider {
-    
+struct NewsAPIKeyIntegrater: NetworkRequestDataProvider {
     var path: String {
         var components = URLComponents(string: endpoint.path)
         var queryItems = components?.queryItems ?? []

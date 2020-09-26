@@ -18,7 +18,7 @@ class NetworkRequestConstructor: NetworkRequestConfigurator {
     private let serverURL: String
     
     init(serverURL: String,
-        cachePolicy: URLRequest.CachePolicy = .reloadRevalidatingCacheData,
+         cachePolicy: URLRequest.CachePolicy = .reloadRevalidatingCacheData,
          timeout: TimeInterval = 10) {
         self.serverURL = serverURL
         self.cachePolicy = cachePolicy

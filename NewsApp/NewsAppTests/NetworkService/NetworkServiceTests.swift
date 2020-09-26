@@ -21,8 +21,13 @@ class NetworkRequestExecuterTests: XCTestCase {
         let service = NetworkRequestExecuter(requestFetcher: stubFetcher)
         let expectation = XCTestExpectation(description: "API to return back in 2 sec")
         
-        service.execute(request: testURL) { (modal: NetworkServiceStubModal?, _) in
-            XCTAssert(modal?.test == testModal.test)
+        service.execute(request: testURL) { (result: Result<NetworkServiceStubModal, Error>) in
+            switch result {
+            case .success(let response):
+                XCTAssert(response.test == testModal.test)
+            case .failure(_):
+                XCTAssert(false)
+            }
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 2)
@@ -34,13 +39,13 @@ class NetworkRequestExecuterTests: XCTestCase {
         let service = NetworkRequestExecuter(requestFetcher: stubFetcher)
         let expectation = XCTestExpectation(description: "API to return back in 2 sec")
         
-        service.execute(request: testURL) { (modal: NetworkServiceStubModal?, error) in
-            if let error = error {
-                XCTAssert(StubNetworkServiceError.noInternet == error as! StubNetworkServiceError)
-            } else {
+        service.execute(request: testURL){ (result: Result<NetworkServiceStubModal, Error>) in
+            switch result {
+            case .success(_):
                 XCTAssert(false)
+            case .failure(let error):
+                XCTAssert(StubNetworkServiceError.noInternet == error as! StubNetworkServiceError)
             }
-            XCTAssert(modal == nil)
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 2)
@@ -54,8 +59,14 @@ class NetworkRequestExecuterTests: XCTestCase {
         let expectation = XCTestExpectation(description: "API to return back in 2 sec")
         
         let service = NetworkRequestExecuter(requestFetcher: fetcher, decoder: decoder)
-        service.execute(request: testURL) { (modal: NetworkServiceStubModal?, nil) in
-            XCTAssert(modal?.test == testModal.test)
+
+        service.execute(request: testURL) { (result: Result<NetworkServiceStubModal, Error>) in
+            switch result {
+            case .success(let response):
+                XCTAssert(response.test == testModal.test)
+            case .failure(let error):
+                XCTAssert(StubNetworkServiceError.noInternet == error as! StubNetworkServiceError)
+            }
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 2)

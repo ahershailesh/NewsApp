@@ -11,9 +11,9 @@ import UIKit
 class NewsAPIViewController: UIViewController {
     
     private lazy var scrollingView = NewsScrollerView(viewModel: viewModel)
-    private let viewModel: ScrollViewRepresentable
+    private let viewModel: NewsCardtableViewRepresentable
     
-    init(viewModel: ScrollViewRepresentable) {
+    init(viewModel: NewsCardtableViewRepresentable) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -33,10 +33,7 @@ class NewsAPIViewController: UIViewController {
            scrollingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
            scrollingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
-        viewModel.setupBinding { [weak self] in
-            self?.scrollingView.newDataLoaded()
-        }
+        navigationItem.title = "Head lines"
     }
 }
 

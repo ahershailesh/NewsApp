@@ -8,68 +8,14 @@
 
 import UIKit
 
-extension UIView {
-    class func construct<T: UIView>() -> T {
-        let view = T(frame: .zero)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }
-}
-
-class NewsViewModel {
-    
-}
-
-protocol ScrollViewRepresentable {
-    var count: Int { get }
-    func model(at index: Int) -> NewsViewModel
-    
-    func setupBinding(refreshCallBack: @escaping () -> Void)
-}
-
-protocol ScrollViewContentUpdater: class {
-    func updateNews(news: [NewsViewModel])
-}
-
-protocol ScrollViewItemTrakeable {
-    func currentViewingIndex(_ index: Int)
-}
-
-class ScrollerViewModel: ScrollViewRepresentable, ScrollViewContentUpdater {
-    private var newsModels: [NewsViewModel] = []
-    private var refreshCallBack: (() -> Void)?
-    private let tracker: ScrollViewItemTrakeable
-    
-    init(tracker: ScrollViewItemTrakeable) {
-        self.tracker = tracker
-    }
-    
-    var count: Int {
-        return newsModels.count
-    }
-    
-    func model(at index: Int) -> NewsViewModel {
-        tracker.currentViewingIndex(index)
-        return newsModels[index]
-    }
-    
-    func setupBinding(refreshCallBack: @escaping () -> Void) {
-        self.refreshCallBack = refreshCallBack
-    }
-    
-    func updateNews(news: [NewsViewModel]) {
-        newsModels += news
-        refreshCallBack?()
-    }
-}
-
-class NewsScrollerView: UIView {
+class NewsScrollerView: UIView, TableViewUpdatable {
     private lazy var tableView: UITableView = UITableView.construct()
-    private let viewModel: ScrollViewRepresentable
+    private var viewModel: NewsCardtableViewRepresentable
     
-    init(viewModel: ScrollViewRepresentable) {
+    init(viewModel: NewsCardtableViewRepresentable) {
         self.viewModel = viewModel
         super.init(frame: .zero)
+        self.viewModel.updatable = self
     }
     
     required init?(coder: NSCoder) {
@@ -77,13 +23,15 @@ class NewsScrollerView: UIView {
     }
     
     func setup() {
+        viewModel.fetchCards()
         setupTableView()
         registerCells()
     }
-
-    func newDataLoaded() {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
+    
+    func update(update: TableViewUpdateType) {
+        switch update {
+        default:
+            tableView.reloadData()
         }
     }
     
@@ -100,17 +48,19 @@ class NewsScrollerView: UIView {
     
     private func registerCells() {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: String(describing: UITableViewCell.self))
+        tableView.register(NewsCardTableViewCell.self, forCellReuseIdentifier: String(describing: NewsCardTableViewCell.self))
     }
 }
 
 extension NewsScrollerView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.count
+        return viewModel.viewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: UITableViewCell.self))
-        cell?.textLabel?.text = "Test"
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: NewsCardTableViewCell.self)) as? NewsCardTableViewCell
+        cell?.update(viewModel: viewModel.viewModels[indexPath.row])
+        cell?.selectionStyle = .none
         return cell ?? UITableViewCell()
     }
 }

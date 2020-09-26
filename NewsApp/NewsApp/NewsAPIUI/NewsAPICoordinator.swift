@@ -17,11 +17,12 @@ class NewsAPICoordinator {
     }
     
     func start() {
-        let homeManager = NewsAPIHomeScreenManager()
-        let viewModel = ScrollerViewModel(tracker: homeManager)
-        homeManager.contentReciever = viewModel
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let executer = NetworkRequestExecuter(decoder: decoder)
+        let intercepter = NewsAPIInterceptor(executer: executer)
+        let viewModel =  NewsCardTableViewModel(intercepter: intercepter)
         let controller = NewsAPIViewController(viewModel: viewModel)
         navController.setViewControllers([controller], animated: true)
     }
-    
 }

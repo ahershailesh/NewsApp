@@ -22,7 +22,7 @@ struct Article: Codable {
     let description: String?
     let url: String
     let urlToImage: String?
-    let publishedAt: String?
+    let publishedAt: Date?
     let content: String?
 }
 
@@ -32,7 +32,12 @@ struct Source: Codable {
     let name: String
 }
 
-class NewsAPIInterceptor {
+protocol NewsAPIIntercepteable {
+    func getHeadLines(configuration: NewsAPIHeadlinesConfiguration, success: @escaping (NewsAPIResponse) -> Void, failure: @escaping (Error?) -> Void)
+    func getEverything(configuration: NewsAPIEverythingConfiguration, success: @escaping (NewsAPIResponse) -> Void, failure: @escaping (Error?) -> Void )
+}
+
+class NewsAPIInterceptor: NewsAPIIntercepteable {
     
     private let requestProvider: NetworkRequestConfigurator
     private let executer: NetworkRequestExecutable
@@ -44,14 +49,15 @@ class NewsAPIInterceptor {
     }
     
     func getHeadLines(configuration: NewsAPIHeadlinesConfiguration, success: @escaping (NewsAPIResponse) -> Void, failure: @escaping (Error?) -> Void) {
-        guard let request = requestProvider.request(with: NewAPIKeyIntegrater(endpoint: .topHeadLines(configuration: configuration))) else {
+        guard let request = requestProvider.request(with: NewsAPIKeyIntegrater(endpoint: .topHeadLines(configuration: configuration))) else {
             failure(nil)
             return
         }
-        executer.execute(request: request) { (item: NewsAPIResponse?, error) in
-            if let item = item {
-                success(item)
-            } else {
+        executer.execute(request: request) { (result: Result<NewsAPIResponse, Error>) in
+            switch result {
+            case .success(let response):
+                success(response)
+            case .failure(let error):
                 failure(error)
             }
         }
@@ -59,14 +65,15 @@ class NewsAPIInterceptor {
     
     func getEverything(configuration: NewsAPIEverythingConfiguration, success: @escaping (NewsAPIResponse) -> Void, failure: @escaping (Error?) -> Void ) {
         
-        guard let request = requestProvider.request(with: NewAPIKeyIntegrater(endpoint: .everything(configuration: configuration))) else {
+        guard let request = requestProvider.request(with: NewsAPIKeyIntegrater(endpoint: .everything(configuration: configuration))) else {
             failure(nil)
             return
         }
-        executer.execute(request: request) { (item: NewsAPIResponse?, error) in
-            if let item = item {
-                success(item)
-            } else {
+        executer.execute(request: request) { (result: Result<NewsAPIResponse, Error>) in
+            switch result {
+            case .success(let response):
+                success(response)
+            case .failure(let error):
                 failure(error)
             }
         }

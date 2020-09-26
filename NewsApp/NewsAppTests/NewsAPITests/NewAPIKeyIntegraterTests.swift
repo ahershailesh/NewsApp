@@ -20,7 +20,7 @@ class NewAPIKeyIntegraterTests: XCTestCase {
     }
     
     func testAPIKey() {
-        let sourcesEndpoint = NewAPIKeyIntegrater(endpoint: .sources)
+        let sourcesEndpoint = NewsAPIKeyIntegrater(endpoint: .sources)
         let component = URLComponents(string: sourcesEndpoint.path)!
         
         let checkKey = component.queryItems?.first(where: { $0.name == "apiKey" })

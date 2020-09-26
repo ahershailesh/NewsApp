@@ -9,7 +9,8 @@
 import Foundation
 
 protocol NetworkRequestExecutable {
-    func execute<T: Decodable>(request: URLRequest, completionBlock: @escaping (T?, Error?) -> Void)
+    func execute<T: Decodable>(request: URLRequest, completionBlock: @escaping (Result<T, Error>) -> Void)
+    func execute(request: URLRequest, completionBlock: @escaping (Data?, URLResponse?, Error?) -> Void)
 }
 
 protocol RequestFetcher {
@@ -33,17 +34,32 @@ class NetworkRequestExecuter: NetworkRequestExecutable {
         self.requestFetcher = requestFetcher
         self.decoder = decoder
     }
-    
-    func execute<T: Decodable>(request: URLRequest, completionBlock: @escaping (T?, Error?) -> Void) {
+
+    func execute<T: Decodable>(request: URLRequest, completionBlock: @escaping (Result<T, Error>) -> Void) {
         let task = requestFetcher.dataTask(with: request) { [weak self] (data, response, error) in
-            if error == nil,
-                let data = data,
-                let dataObject = try! self?.decoder.decode(T.self, from: data) {
-                completionBlock(dataObject, nil)
-            } else {
-                completionBlock(nil, error)
+            guard let self = self else { return }
+            if let data = data {
+                do {
+                    let dataObject = try self.decoder.decode(T.self, from: data)
+                    DispatchQueue.main.async {
+                        completionBlock(.success(dataObject))
+                    }
+                } catch let error {
+                    DispatchQueue.main.async {
+                        completionBlock(.failure(error))
+                    }
+                }
+            } else if let error = error {
+                DispatchQueue.main.async {
+                    completionBlock(.failure(error))
+                }
             }
         }
+        task.resume()
+    }
+    
+    func execute(request: URLRequest, completionBlock: @escaping (Data?, URLResponse?, Error?) -> Void) {
+        let task = requestFetcher.dataTask(with: request, completionHandler: completionBlock)
         task.resume()
     }
 }

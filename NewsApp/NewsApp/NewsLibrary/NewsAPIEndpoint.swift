@@ -30,7 +30,7 @@ struct NewsAPIHeadlinesConfiguration {
     let category: Category?
     let sources: String?
     let pageSize: Int = 20
-    let page: Int = 0
+    let page: Int = 1
     
     var path: String {
         var dict: [String: String] = [:]
@@ -55,7 +55,7 @@ struct NewsAPIEverythingConfiguration {
     let language: Language?
     let sortBy: SortingPreference?
     let pageSize: Int = 20
-    let page: Int = 0
+    let page: Int = 1
     
     var path: String {
         let dateFormatter = DateFormatter()
