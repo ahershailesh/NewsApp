@@ -38,6 +38,7 @@ class NewsScrollerView: UIView, TableViewUpdatable {
     private func setupTableView() {
         addSubview(tableView)
         tableView.dataSource = self
+        tableView.delegate = self
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: self.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -62,5 +63,11 @@ extension NewsScrollerView: UITableViewDataSource {
         cell?.update(viewModel: viewModel.viewModels[indexPath.row])
         cell?.selectionStyle = .none
         return cell ?? UITableViewCell()
+    }
+}
+
+extension NewsScrollerView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        viewModel.openNews(at: indexPath.row)
     }
 }

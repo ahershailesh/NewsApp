@@ -36,6 +36,7 @@
 		F28776FB251FB7450012E8A2 /* NewsCardTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F28776FA251FB7450012E8A2 /* NewsCardTableViewCellViewModel.swift */; };
 		F28776FD251FB7BE0012E8A2 /* NewCardTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F28776FC251FB7BE0012E8A2 /* NewCardTableViewModel.swift */; };
 		F28776FF251FC9990012E8A2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F28776FE251FC9990012E8A2 /* Extensions.swift */; };
+		F2877702251FD2F70012E8A2 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2877701251FD2F70012E8A2 /* WebViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		F28776FA251FB7450012E8A2 /* NewsCardTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsCardTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		F28776FC251FB7BE0012E8A2 /* NewCardTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCardTableViewModel.swift; sourceTree = "<group>"; };
 		F28776FE251FC9990012E8A2 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		F2877701251FD2F70012E8A2 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,8 +212,8 @@
 		F238C88C251A82FC000FAFF6 /* NewsAPIUI */ = {
 			isa = PBXGroup;
 			children = (
+				F2877700251FD2DA0012E8A2 /* Controllers */,
 				F28776F9251FB7380012E8A2 /* ViewModel */,
-				F238C856251A3198000FAFF6 /* NewsAPIViewController.swift */,
 				F238C88D251A8342000FAFF6 /* NewsScrollerView.swift */,
 				F22F9C94251A8ABC00507D71 /* NewsAPICoordinator.swift */,
 				F28776F5251F3D460012E8A2 /* NewsCardTableViewCell.swift */,
@@ -227,6 +229,15 @@
 				F28776FC251FB7BE0012E8A2 /* NewCardTableViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		F2877700251FD2DA0012E8A2 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F238C856251A3198000FAFF6 /* NewsAPIViewController.swift */,
+				F2877701251FD2F70012E8A2 /* WebViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -330,6 +341,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F238C883251A4A98000FAFF6 /* NetworkRequestConstructor.swift in Sources */,
+				F2877702251FD2F70012E8A2 /* WebViewController.swift in Sources */,
 				F238C857251A3198000FAFF6 /* NewsAPIViewController.swift in Sources */,
 				F22F9C9C251BC35400507D71 /* NetworkRequestDataProvider.swift in Sources */,
 				F238C88E251A8342000FAFF6 /* NewsScrollerView.swift in Sources */,

@@ -15,6 +15,8 @@ protocol NewsCardTableViewCellRepresentable {
     var source: String { get }
     
     func fetchImageData(callBack: @escaping (Data) -> Void)
+    
+    func openNews()
 }
 
 class NewsCardTableViewCellViewModel: NewsCardTableViewCellRepresentable {
@@ -22,9 +24,12 @@ class NewsCardTableViewCellViewModel: NewsCardTableViewCellRepresentable {
     private let article: Article
     private let cacher: ResponseCacheable
     
-    init(article: Article, cacher: ResponseCacheable = ResponseCacher()) {
+    private let listener: NewsAPICoordinatorListener
+    
+    init(article: Article, cacher: ResponseCacheable = ResponseCacher(), listener: NewsAPICoordinatorListener) {
         self.article = article
         self.cacher = cacher
+        self.listener = listener
     }
     
     var title: String {
@@ -71,5 +76,9 @@ class NewsCardTableViewCellViewModel: NewsCardTableViewCellRepresentable {
             case .failure(_): break
             }
         }
+    }
+    
+    func openNews() {
+        listener.openNews?(article.url, article.source.name)
     }
 }

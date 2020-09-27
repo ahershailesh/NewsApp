@@ -21,27 +21,36 @@ protocol NewsCardtableViewRepresentable {
     var updatable: TableViewUpdatable? { get set }
     
     func fetchCards()
+    
+    func openNews(at index: Int)
 }
 
+
 class NewsCardTableViewModel: NewsCardtableViewRepresentable {
-    
     var viewModels: [NewsCardTableViewCellRepresentable] = []
     
     weak var updatable: TableViewUpdatable?
 
+    private let listener: NewsAPICoordinatorListener
     private let intercepter: NewsAPIIntercepteable
     
-    init(intercepter: NewsAPIIntercepteable = NewsAPIInterceptor()) {
+    init(intercepter: NewsAPIIntercepteable = NewsAPIInterceptor(), listener: NewsAPICoordinatorListener) {
         self.intercepter = intercepter
+        self.listener = listener
     }
     
     func fetchCards() {
         let configuration = NewsAPIHeadlinesConfiguration(query: nil, country: .in, category: nil, sources: nil)
         intercepter.getHeadLines(configuration: configuration, success: { [weak self] (response) in
-            self?.viewModels = response.articles.map { NewsCardTableViewCellViewModel(article: $0) }
-            self?.updatable?.update(update: .refresh)
+            guard let self = self else { return }
+            self.viewModels = response.articles.map { NewsCardTableViewCellViewModel(article: $0, listener: self.listener) }
+            self.updatable?.update(update: .refresh)
         }) { (_) in
             
         }
+    }
+    
+    func openNews(at index: Int) {
+        viewModels[index].openNews()
     }
 }
