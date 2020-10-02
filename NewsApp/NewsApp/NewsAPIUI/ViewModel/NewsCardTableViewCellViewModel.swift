@@ -67,7 +67,7 @@ class NewsCardTableViewCellViewModel: NewsCardTableViewCellRepresentable {
                 return
         }
         let request = URLRequest(url: url)
-        cacher.fetch(request: request) { (result) in
+        cacher.fetch(request: request, fromCache: true) { (result) in
             switch result {
             case .success(let data):
                 DispatchQueue.main.async {
